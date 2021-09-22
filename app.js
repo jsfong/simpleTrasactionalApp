@@ -1,15 +1,20 @@
 
+'use strict';
+
 const http = require('http');
-const hostname = '127.0.0.1';
+
+//Hostname should be equal to container name when running node is container
+const hostname = process.env.HOST_NAME || 'localhost';
 const port = 3000;
+
+
 
 const server = http.createServer((req, res) => {
     res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    res.end('Hello World');
+    res.end(`Hello world`);
 });
 
-server.listen(port, hostname, ()=>{
+server.listen(port, hostname, () => {
     console.log(`Server running at http://${hostname}:${port}`);
 });
 

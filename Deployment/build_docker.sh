@@ -1,0 +1,1 @@
+docker build -t web_service:1.0 ../.
