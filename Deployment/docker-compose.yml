@@ -10,9 +10,7 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
     ports:
-      - "8080:80"
-    networks:
-      - thenet
+      - "8080:80"   
     depends_on:
       - web
     
@@ -20,12 +18,10 @@ services:
     image: web_service:1.0
     container_name: "web_service"    
     ports:
-      - "3000:3000"  
-    networks:
-      - thenet 
+      - "3000:3000"     
     environment:
       - HOST_NAME=web
-      - REDIS_HOST_NAME=host.docker.internal
+      - REDIS_HOST_NAME=redis
     depends_on:
       - redis
     links:
@@ -39,8 +35,9 @@ services:
     volumes:
       # - redis-data:/data
       - redis-conf:/usr/local/etc/redis/redis.conf 
-networks:
-    thenet:
+#Remove network solve the issue where nodejs cannot access redis
+# networks:
+#     thenet:
 volumes:
   redis-data:
   redis-conf:

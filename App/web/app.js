@@ -17,7 +17,8 @@ const redisPort = 6379;
 const app = express();
 const redisClient = redis.createClient(redisPort, redisHostname);
 
-//Connect redis
+
+// Connect redis
 redisClient.on("connect", () => {
     console.log(`Connected to redis at ${redisHostname}:${redisPort}`)
 });
