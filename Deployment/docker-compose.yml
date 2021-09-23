@@ -1,7 +1,7 @@
 ##########
 # System #
 ##########
-version: "3.6"
+version: "3"
 
 services:
    # The load balancer
@@ -12,9 +12,10 @@ services:
     ports:
       - "8080:80"
     networks:
-            - thenet
+      - thenet
     depends_on:
       - web
+    
   web:
     image: web_service:1.0
     container_name: "web_service"    
@@ -24,9 +25,15 @@ services:
       - thenet 
     environment:
       - HOST_NAME=web
+      - REDIS_HOST_NAME=host.docker.internal
+    depends_on:
+      - redis
+    links:
+      - redis
   redis:
-    image: "redis:alpine"
-    command: redis-server
+    image: redis:6.0.7
+    container_name: redis
+    # command: ["redis-server", "--bind", "redis", "--port", "6379"]    
     ports:
       - "6379:6379"
     volumes:

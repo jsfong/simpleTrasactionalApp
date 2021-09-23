@@ -18,23 +18,18 @@ const app = express();
 const redisClient = redis.createClient(redisPort, redisHostname);
 
 //Connect redis
-redisClient.on("connect", ()=>{
+redisClient.on("connect", () => {
     console.log(`Connected to redis at ${redisHostname}:${redisPort}`)
 });
 
-// redisClient.on("error", function(error) {
-//     console.error(error);
-//   });
-  
-
 
 //Handle rest
-app.get('/', (req, res) =>{
+app.get('/', (req, res) => {
     let timeLog = 'Time taken';
     console.time(timeLog);
 
     //Save data to redis
-    const keyName = Math.random().toString().substr(2,10);    
+    const keyName = Math.random().toString().substr(2, 10);
     redisClient.set("test_key", "test_value", redis.print);
 
     console.timeEnd(timeLog);
@@ -42,7 +37,7 @@ app.get('/', (req, res) =>{
 });
 
 //Setup server
-app.listen(port, hostname, ()=>{
+app.listen(port, hostname, () => {
     console.log(`Server running at http://${hostname}:${port}`);
 });
 
