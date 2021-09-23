@@ -1,20 +1,49 @@
 
 'use strict';
 
-const http = require('http');
+const express = require('express');
+const redis = require("redis");
 
+//Hostname & Port
+//HTTP
 //Hostname should be equal to container name when running node is container
 const hostname = process.env.HOST_NAME || 'localhost';
 const port = 3000;
 
+//Redis
+const redisHostname = process.env.REDIS_HOST_NAME || '127.0.0.1';
+const redisPort = 6379;
 
+const app = express();
+const redisClient = redis.createClient(redisPort, redisHostname);
 
-const server = http.createServer((req, res) => {
-    res.statusCode = 200;
-    res.end(`Hello world`);
+//Connect redis
+redisClient.on("connect", ()=>{
+    console.log(`Connected to redis at ${redisHostname}:${redisPort}`)
 });
 
-server.listen(port, hostname, () => {
+// redisClient.on("error", function(error) {
+//     console.error(error);
+//   });
+  
+
+
+//Handle rest
+app.get('/', (req, res) =>{
+    let timeLog = 'Time taken';
+    console.time(timeLog);
+
+    //Save data to redis
+    const keyName = Math.random().toString().substr(2,10);    
+    redisClient.set("test_key", "test_value", redis.print);
+
+    console.timeEnd(timeLog);
+    res.status(200).send('Hello World');
+});
+
+//Setup server
+app.listen(port, hostname, ()=>{
     console.log(`Server running at http://${hostname}:${port}`);
 });
+
 

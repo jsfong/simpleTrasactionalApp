@@ -23,6 +23,17 @@ services:
     networks:
       - thenet 
     environment:
-      - HOST_NAME=web 
+      - HOST_NAME=web
+  redis:
+    image: "redis:alpine"
+    command: redis-server
+    ports:
+      - "6379:6379"
+    volumes:
+      # - redis-data:/data
+      - redis-conf:/usr/local/etc/redis/redis.conf 
 networks:
     thenet:
+volumes:
+  redis-data:
+  redis-conf:
