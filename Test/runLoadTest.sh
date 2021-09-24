@@ -1,6 +1,6 @@
 #!/bin/bash
 
-JMETER_PATH="D:\Dev\Tool\apache-jmeter-5.4.1\bin\jmeter"
+JMETER_PATH="D:\Dev\nodejs\apache-jmeter-5.4.1\bin\jmeter"
 R_DIR="report"
 echo $JMETER_PATH
 

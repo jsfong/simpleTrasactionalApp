@@ -16,9 +16,7 @@ services:
     
   web:
     image: web_service:1.0
-    container_name: "web_service"    
-    ports:
-      - "3000:3000"     
+    restart: unless-stopped    
     environment:
       - HOST_NAME=web
       - REDIS_HOST_NAME=redis
