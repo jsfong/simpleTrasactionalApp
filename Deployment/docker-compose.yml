@@ -1,0 +1,102 @@
+##########
+# System #
+##########
+version: "3"
+
+services:
+   # The load balancer
+  nginx:
+    image: nginx:1.16.0-alpine
+    restart: always
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "8080:80"   
+    depends_on:
+      - web
+    
+  web:
+    image: web_service:1.0
+    restart: unless-stopped    
+    environment:
+      - HOST_NAME=web
+      - REDIS_HOST_NAME=redis
+    depends_on:
+      - redis
+    links:
+      - redis
+  redis:
+    image: redis:6.0.7
+    container_name: redis
+    restart: always
+    # command: ["redis-server", "--bind", "redis", "--port", "6379"]    
+    ports:
+      - "6379:6379"
+    volumes:
+      # - redis-data:/data
+      - redis-conf:/usr/local/etc/redis/redis.conf
+
+  elasticsearch:
+    image: "docker.elastic.co/elasticsearch/elasticsearch:7.2.0"
+    environment:
+        - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+        - "discovery.type=single-node"
+    ports:
+        - "9200:9200"
+    volumes:
+        - elasticsearch_data:/usr/share/elasticsearch/data
+
+  kibana:
+    image: "docker.elastic.co/kibana/kibana:7.2.0"
+    ports:
+        - "5601:5601"
+    depends_on:
+      - elasticsearch
+
+  filebeat:
+    image: "docker.elastic.co/beats/filebeat:7.2.0"
+    user: root
+    volumes:
+        - ./../App/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+        - /var/lib/docker:/var/lib/docker:ro
+        - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+    - elasticsearch
+    - kibana
+
+  metricbeat:
+    image: "docker.elastic.co/beats/metricbeat:7.2.0"
+    user: root
+    volumes:
+      - ./../App/metricbeat/metricbeat.yml:/metricbeat/metricbeat.yml
+      - /proc:/hostfs/proc:ro
+      - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
+      - /:/hostfs:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - metricbeat:/usr/share/metricbeat/data
+    environment:
+      - ELASTICSEARCH_HOST= http://elasticsearch:9200
+      - KIBANA_HOST= http://kibana:5601
+    # disable strict permission checks
+    command: ["--strict.perms=false", "-system.hostfs=/hostfs"]
+    depends_on:
+    - elasticsearch
+    - kibana
+
+  # jmeter:
+  #   build: ./../App/jmeter
+  #   container_name: jmeter
+  #   tty: true #tty true make the docker images stay up even with nothing running
+  #   volumes:
+  #     - ./../Test:/usr/src/app
+
+#Remove network solve the issue where nodejs cannot access redis
+# networks:
+#     thenet:
+volumes:
+  redis-data:
+  redis-conf:
+  elasticsearch_data:
+  metricbeat:
+  # elasticsearch-data-volume:
+  #   driver: local

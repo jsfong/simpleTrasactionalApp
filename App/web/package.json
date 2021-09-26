@@ -1,0 +1,29 @@
+{
+  "name": "simpletrasactionalapp",
+  "version": "1.0.0",
+  "description": "A simple transactional microservice application",
+  "main": "index.js",
+  "scripts": {
+    "start": "node  ./app.js",
+    "start-dev": "nodemon ./app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jsfong/simpleTrasactionalApp.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jsfong/simpleTrasactionalApp/issues"
+  },
+  "homepage": "https://github.com/jsfong/simpleTrasactionalApp#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.12"
+  },
+  "dependencies": {
+    "axios": "^0.21.4",
+    "express": "^4.17.1",
+    "redis": "^3.1.2"
+  }
+}
