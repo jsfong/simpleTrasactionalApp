@@ -48,7 +48,9 @@ input(String): Sample input data from user.
 A successful insertion returns the transaction ID.
 
 # High Level Design
-![image]()
+![image](./Resources/Transaction.jpeg)
+
+![image](./Resources/Transaction_1.jpeg)
 
 ### Reverse Proxy / Load balancer
 Nginx will be use as reverse proxy and load balancing the transaction server. All outside request will be handle and route by Nginx. 
@@ -107,7 +109,7 @@ redis                        docker-entrypoint.sh redis ...   Up      0.0.0.0:63
 # Future Improvement
 To improve the throughput if the transaction is long processing process, instead of transaction server directly write to storage. We can implement a message queue to hold the transaction request and multiple transaction server as worker to process the transaction and persist to DB.
 
-![image]()
+![image](./Resources/Transaction_2.jpeg)
 
 ### Transaction Management Server
 RESTFul API server able to accept transaction request, query transaction status and get transaction result. Provider to message queue.
