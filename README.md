@@ -12,23 +12,24 @@ The objective is to handle 500 transaction per second.
 - HTTP is use. No security encryption / TLS.
 
 
-### Estimation
+## Estimation
 Our system will only be write-heavy. It will generate transactional data and persist into storage.
 
-#### Read/Write ratio
+
+### Read/Write ratio
 Since the system will only be writing. Read/Write ratio:
 
 > 0:1
 
 
-#### Traffic
+### Traffic
 Assuming we have 500 transaction per second and read/write ratio = 0:1. We can expect:
 
 > 500 write/s
 
 > 0 read/s
 
-####  Storage / Memory
+###  Storage / Memory
 Assuming every transaction will generate and persist the transactional data into the in-memory storage. One key value pair will be store per transaction.
 
 By assuming each store object will be approximation 120 bytes. We will need total storage:
@@ -48,9 +49,11 @@ input(String): Sample input data from user.
 A successful insertion returns the transaction ID.
 
 # High Level Design
-![image](./Resources/Transaction.jpeg)
 
 ![image](./Resources/Transaction_1.jpeg)
+
+![image](./Resources/Transaction.jpeg)
+
 
 ### Reverse Proxy / Load balancer
 Nginx will be use as reverse proxy and load balancing the transaction server. All outside request will be handle and route by Nginx. 
@@ -105,6 +108,27 @@ deployment_web_1             docker-entrypoint.sh node  ...   Up      3000/tcp
 redis                        docker-entrypoint.sh redis ...   Up      0.0.0.0:6379->6379/tcp,:::6379->6379/tcp
 
 ```
+
+# Load Testing
+Jmeter test file is located at:
+```./Test/TransactionalServerTest.jmx```
+
+In order to run load test. 
+- Please ensure Jmeter is install / downloaded.
+- Change the Jmeter path in JMETER_PATH variable inside```./Test/runLoadTest.sh``` accordingly
+
+```bash
+#!/bin/bash
+
+JMETER_PATH="D:\Dev\nodejs\apache-jmeter-5.4.1\bin\jmeter"
+```
+
+## Executing Load Test
+```bash
+sh .\Test\runLoadTest.sh
+```
+
+A test report will be generated at ```.\Test\report\index.html``` when load test is successful.
 
 # Future Improvement
 To improve the throughput if the transaction is long processing process, instead of transaction server directly write to storage. We can implement a message queue to hold the transaction request and multiple transaction server as worker to process the transaction and persist to DB.
