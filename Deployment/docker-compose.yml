@@ -91,7 +91,7 @@ services:
     volumes:
       -  ./../App/swagger:/usr/share/nginx/html/doc
     environment:
-      API_URL: doc/openapi.yaml
+      API_URL: doc/openapi.yaml #Browser depend. Chrome will autoopen
 
 
   # jmeter:
