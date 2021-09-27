@@ -87,9 +87,9 @@ services:
     image: swaggerapi/swagger-ui:v3.52.3
     container_name: swagger_ui_container
     ports:
-      - "8081:8000"
+      - "8082:8080"
     volumes:
-      - ./../App/swagger:/usr/share/nginx/html/doc
+      -  ./../App/swagger:/usr/share/nginx/html/doc
     environment:
       API_URL: doc/openapi.yaml
 
