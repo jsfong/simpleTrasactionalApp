@@ -24,16 +24,28 @@ redisClient.on("connect", () => {
 });
 
 
+app.use(express.json());
+
 //POST - Perform transaction
-app.post('/', (req, res) => {
+app.post('/transaction', (req, res) => {
+
+    const body = req.body;
+    console.log(`Receive request: ${JSON.stringify(body)}`);
+
     let timeLog = 'Time taken';
     console.time(timeLog);
 
     //Save data to redis
-    let i = 0;
-    const keyName = Math.random().toString().substr(2, 10);
+    let keyName = Math.random().toString().substr(2, 10);
+    let transactionData = "test_value";
 
-    redisClient.set(keyName, "test_value", redis.print);
+    if (body.userId)
+        keyName += `_${body.userId}`;
+
+    if (body.metadata)
+        transactionData = body.metadata;
+
+    redisClient.set(keyName, transactionData, redis.print);
 
     console.timeEnd(timeLog);
     res.status(200).send(`Transaction ID: ${keyName}`);
