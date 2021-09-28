@@ -1,0 +1,128 @@
+openapi: 3.0.1
+info:
+  title: Simple Transactional Application
+  description: 'This is a simple transactional application. For more info please refer to  
+  [http://swagger.io](http://swagger.io).'
+  contact:
+    email: jsfong5105@gmail.com
+  version: 1.0.0
+servers:
+- url: http://localhost:8080
+tags:
+- name: Transaction
+  description: Transaction related API
+  externalDocs:
+    description: Find out more
+    url: http://swagger.io
+- name: Record
+  description: Transaction record management API
+  
+paths:
+  /transaction:
+    post:
+      tags:
+      - Transaction
+      summary: Execute a transaction
+      requestBody:
+        description: Transaction detail that needs to be execute a transaction
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionDetail'
+        required: true
+      responses:
+        400:
+          description: Invalid input
+          content: {}
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionResult'
+  
+  /record:
+    delete:
+      tags:
+      - Record
+      summary: Delete all transaction record
+      description: This will delete all transaction record.
+      responses:
+        200:
+          description: successful operation
+          content: {}
+        400:
+          description: Unable to delete
+          content: {}    
+
+  /record/{transactionId}:
+    delete:
+      tags:
+        - Record
+      summary: Delete transaction result by transaction ID
+      description: Delete transaction result by transaction ID
+      parameters:
+      - name: transactionId
+        in: path
+        description: ID of record that needs to be fetched
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: successful operation
+          content: {}
+        400:
+          description: Unable to delete or transaction not found
+          content: {}        
+    get:
+      tags:
+      - Record
+      summary: Find transaction result by transaction ID
+      description: Find transaction result by transaction ID
+      parameters:
+      - name: transactionId
+        in: path
+        description: ID of record that needs to be fetched
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionResult'
+        400:
+          description: Invalid ID supplied
+          content: {}
+        404:
+          description: Order not found
+          content: {}
+    
+    
+components:
+  schemas:
+    TransactionDetail:
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int64
+          example: 1
+        metadata:
+          type: string
+          description: Metadata regarding the transaction
+          example: Sample metadata
+    TransactionResult:
+      type: object
+      properties:
+        transactionId:
+          type: string
+          example: 1234576890
+        transactionMetadata:
+          type: string
+          example: Sample transaction data
+    
+   
