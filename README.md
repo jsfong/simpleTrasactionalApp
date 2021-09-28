@@ -7,8 +7,8 @@ The objective is to handle 500 transaction per second.
 
 ## Assumption
 - User will execute a transaction via Restful API with input data less than 5kb.
-- A random string (length of 10) is generated as transaction result. 
-  This result will be persist in in memory storage and result in the response of API.
+- Transaction result will be persist in in-memory storage and return in the response of API.
+- All compose will be deployed on local docker engine.
 - HTTP is use. No security encryption / TLS.
 
 
@@ -17,13 +17,13 @@ Our system will only be write-heavy. It will generate transactional data and per
 
 
 ### Read/Write ratio
-Since the system will only be writing. Read/Write ratio:
+Since the write-heavy will be mostly writing. Read/Write ratio can be assumpt:
 
 > 0:1
 
 
 ### Traffic
-Assuming we have 500 transaction per second and read/write ratio = 0:1. We can expect:
+Assuming we have to achieve 500 transaction per second and read/write ratio = 0:1. We can expect:
 
 > 500 write/s
 
@@ -38,15 +38,8 @@ By assuming each store object will be approximation 120 bytes. We will need tota
 
 # System APIs
 
-```executeTransaction(input)```
+API documentation can be access at: [http://localhost:8082](http://localhost:8082)
 
-**Parameters:**
-
-input(String): Sample input data from user.
-
-**Returns:**
-
-A successful insertion returns the transaction ID.
 
 # High Level Design
 
@@ -56,18 +49,18 @@ A successful insertion returns the transaction ID.
 
 
 ### Reverse Proxy / Load balancer
-Nginx will be use as reverse proxy and load balancing the transaction server. All outside request will be handle and route by Nginx. 
+Nginx will be use as reverse proxy and load balancing the transaction server. All request will be handle and route by Nginx. 
 
 When scaling transaction server, Nginx will be using round robin to load balance across instance of transaction server.
 
 Proxy can be access at: [http://localhost:8080](http://localhost:8080)
 
 ### Transaction Server
-A micro service server that able to handle Restful API. Simple Nodejs is used.
+A micro service server that able to handle Restful API. Nodejs is used.
 
 ### In Memory Storage
 Redis is used to store simple key value pair. 
-* Key = Transaction ID
+* Key = Transaction ID + User ID
 * Value = Sample Transaction data.
 
 ### Monitoring / Logging
@@ -106,6 +99,7 @@ deployment_metricbeat_1      /usr/local/bin/docker-entr ...   Up
 deployment_nginx_1           nginx -g daemon off;             Up      0.0.0.0:8080->80/tcp,:::8080->80/tcp
 deployment_web_1             docker-entrypoint.sh node  ...   Up      3000/tcp
 redis                        docker-entrypoint.sh redis ...   Up      0.0.0.0:6379->6379/tcp,:::6379->6379/tcp
+swagger_ui_container         /docker-entrypoint.sh sh / ...   Up      80/tcp, 0.0.0.0:8082->8080/tcp,:::8082->8080/tcp
 
 ```
 
