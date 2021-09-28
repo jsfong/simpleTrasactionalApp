@@ -40,7 +40,6 @@ By assuming each store object will be approximation 120 bytes. We will need tota
 
 API documentation can be access at: [http://localhost:8082](http://localhost:8082)
 
-
 # High Level Design
 
 ![image](./Resources/Transaction_1.jpeg)
@@ -50,6 +49,7 @@ API documentation can be access at: [http://localhost:8082](http://localhost:808
 
 ### Reverse Proxy / Load balancer
 Nginx will be use as reverse proxy and load balancing the transaction server. All request will be handle and route by Nginx. 
+
 
 When scaling transaction server, Nginx will be using round robin to load balance across instance of transaction server.
 
@@ -100,6 +100,7 @@ deployment_nginx_1           nginx -g daemon off;             Up      0.0.0.0:80
 deployment_web_1             docker-entrypoint.sh node  ...   Up      3000/tcp
 redis                        docker-entrypoint.sh redis ...   Up      0.0.0.0:6379->6379/tcp,:::6379->6379/tcp
 swagger_ui_container         /docker-entrypoint.sh sh / ...   Up      80/tcp, 0.0.0.0:8082->8080/tcp,:::8082->8080/tcp
+
 
 ```
 
